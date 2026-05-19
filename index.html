@@ -181,12 +181,11 @@
                 <option value="Front of house team management">Front of house team management</option>
                 <option value="Accounts & payables">Accounts & payables</option>
                 <option value="Design">Design</option>
-                <option value="Membership sales">Membership sales</option>
-                <option value="Membership events">Membership events</option>
-                <option value="Membership services">Membership services</option>
+                <option value="Membership sales & events">Membership sales & events</option>
+                <option value="Membership guest relations">Membership guest relations</option>
                 <option value="Corporate outreach & sales">Corporate outreach & sales</option>
                 <option value="Reservations">Reservations</option>
-                <option value="Programming & events">Programming & events</option>
+                <option value="Live Programming">Live Programming</option>
                 <option value="Event management & sales">Event management & sales</option>
                 <option value="Marketing">Marketing</option>
                 <option value="Partnership services">Partnership services</option>
@@ -200,9 +199,9 @@
             <div class="question-label">Which best describes your level? <span class="req">*</span></div>
             <div class="radio-group">
                 <label class="radio-option"><input type="radio" name="q2" value="Junior"><span class="option-text">Junior</span></label>
-                <label class="radio-option"><input type="radio" name="q2" value="Mid-level"><span class="option-text">Mid-level</span></label>
-                <label class="radio-option"><input type="radio" name="q2" value="Senior"><span class="option-text">Senior</span></label>
-                <label class="radio-option"><input type="radio" name="q2" value="Manager or above"><span class="option-text">Manager or above</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Manager"><span class="option-text">Manager</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Head of Department"><span class="option-text">Head of Department</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Executive or above"><span class="option-text">Executive or above</span></label>
             </div>
             <div class="error-msg" id="q2-err">Please select your level.</div>
         </div>
@@ -928,14 +927,13 @@
         'Marketing':                   'sc-Marketing & Social',
         'Accounts & payables':         'sc-Finance & Data Management',
         'Front of house team management': 'sc-Customer Service',
-        'Membership services':         'sc-Customer Service',
+        'Membership guest relations':   'sc-Customer Service',
         'Reservations':                'sc-Customer Service',
-        'Membership sales':            'sc-Event Sales',
+        'Membership sales & events':    'sc-Event Sales',
         'Corporate outreach & sales':  'sc-Event Sales',
         'Partnership services':        'sc-Event Sales',
         'Event management & sales':    'sc-Event Sales',
-        'Programming & events':        'sc-Event Sales',
-        'Membership events':           'sc-Event Sales',
+        'Live Programming':             'sc-Event Sales',
     };
 
     function handleDepartmentChange() {
