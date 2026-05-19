@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOKO — AI at Work</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #f5f5f3;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── Header ── */
+        .survey-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .survey-header h1 { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+        .progress-text { font-size: 12px; opacity: 0.6; }
+        .progress-bar-wrap { background: #333; height: 3px; }
+        .progress-bar { background: white; height: 3px; width: 0%; transition: width 0.4s ease; }
+
+        /* ── Layout ── */
+        .container { max-width: 700px; margin: 0 auto; padding: 44px 24px 80px; }
+
+        /* ── Sections ── */
+        .section { display: none; animation: fadeUp 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+        .section-title { font-size: 28px; font-weight: 800; color: #1a1a1a; margin-bottom: 10px; line-height: 1.2; letter-spacing: -0.02em; }
+        .section-description { font-size: 15px; color: #666; margin-bottom: 40px; line-height: 1.75; }
+
+        /* ── Intro ── */
+        .koko-mark { font-size: 18px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; display: inline-block; margin-bottom: 36px; color: #1a1a1a; }
+        .intro-title { font-size: 38px; font-weight: 900; line-height: 1.15; margin-bottom: 24px; letter-spacing: -0.03em; }
+        .intro-body { font-size: 16px; line-height: 1.8; color: #444; margin-bottom: 16px; }
+        .intro-note { background: #ebebea; border-radius: 10px; padding: 18px 22px; font-size: 14px; color: #555; margin: 28px 0 36px; line-height: 1.75; }
+        .intro-note strong { color: #1a1a1a; }
+        .time-note { font-size: 13px; color: #aaa; margin-bottom: 36px; }
+
+        /* ── Questions ── */
+        .question { margin-bottom: 38px; }
+        .question-label { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; line-height: 1.5; }
+        .question-hint { font-size: 13px; color: #999; margin-bottom: 14px; }
+
+        /* ── Dropdown ── */
+        select {
+            width: 100%; padding: 13px 16px; border: 1.5px solid #ddd; border-radius: 9px;
+            font-size: 15px; color: #1a1a1a; background: white; cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='7' viewBox='0 0 12 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%231a1a1a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 16px center;
+            transition: border-color 0.2s;
+        }
+        select:focus { outline: none; border-color: #1a1a1a; }
+
+        /* ── Radio & Checkbox ── */
+        .radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 9px; }
+        .radio-option, .checkbox-option {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 16px; border: 1.5px solid #e0e0e0; border-radius: 9px;
+            cursor: pointer; background: white; transition: all 0.15s;
+        }
+        .radio-option:hover, .checkbox-option:hover { border-color: #999; }
+        .radio-option.selected, .checkbox-option.selected { border-color: #1a1a1a; background: #f5f5f3; }
+        .radio-option input, .checkbox-option input { margin-top: 2px; flex-shrink: 0; width: 17px; height: 17px; accent-color: #1a1a1a; cursor: pointer; }
+        .option-text { font-size: 15px; color: #1a1a1a; line-height: 1.5; }
+
+        /* ── Likert ── */
+        .likert-wrap { background: white; border: 1.5px solid #e0e0e0; border-radius: 9px; padding: 20px; }
+        .likert-ends { display: flex; justify-content: space-between; margin-bottom: 14px; }
+        .likert-end { font-size: 12px; color: #999; max-width: 130px; }
+        .likert-end:last-child { text-align: right; }
+        .likert-scale { display: flex; justify-content: space-between; gap: 6px; }
+        .likert-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; }
+        .likert-btn input { width: 19px; height: 19px; accent-color: #1a1a1a; cursor: pointer; }
+        .likert-btn span { font-size: 13px; color: #aaa; }
+        .likert-na { margin-top: 14px; padding-top: 14px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 8px; }
+        .likert-na label { font-size: 13px; color: #999; cursor: pointer; }
+
+        /* ── Textarea ── */
+        textarea {
+            width: 100%; padding: 13px 16px; border: 1.5px solid #ddd; border-radius: 9px;
+            font-size: 15px; color: #1a1a1a; font-family: inherit; resize: vertical;
+            min-height: 100px; transition: border-color 0.2s; background: white;
+        }
+        textarea:focus { outline: none; border-color: #1a1a1a; }
+        textarea::placeholder { color: #ccc; }
+
+        /* ── Other input ── */
+        .other-input {
+            margin-top: 10px; width: 100%; padding: 11px 14px; border: 1.5px solid #ddd;
+            border-radius: 9px; font-size: 14px; font-family: inherit; display: none;
+            background: white; color: #1a1a1a;
+        }
+        .other-input.visible { display: block; }
+        .other-input:focus { outline: none; border-color: #1a1a1a; }
+
+        /* ── Nav ── */
+        .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e8e8e8; }
+        .btn { padding: 13px 26px; border-radius: 9px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; }
+        .btn-primary { background: #1a1a1a; color: white; }
+        .btn-primary:hover { background: #333; }
+        .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+        .btn-secondary { background: transparent; color: #aaa; border: 1.5px solid #ddd; }
+        .btn-secondary:hover { border-color: #999; color: #1a1a1a; }
+
+        /* ── Required ── */
+        .req { color: #d44; margin-left: 3px; }
+
+        /* ── Success ── */
+        .success-screen { display: none; text-align: center; padding: 80px 24px; }
+        .success-screen.active { display: block; }
+        .success-check { width: 64px; height: 64px; background: #1a1a1a; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; }
+        .success-check svg { width: 28px; height: 28px; }
+
+        /* ── Mobile ── */
+        @media (max-width: 600px) {
+            .container { padding: 28px 16px 60px; }
+            .intro-title { font-size: 30px; }
+            .section-title { font-size: 24px; }
+            .likert-btn span { font-size: 11px; }
+        }
+
+        /* ── Validation error ── */
+        .error-msg { color: #d44; font-size: 13px; margin-top: 6px; display: none; }
+        .error-msg.visible { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="survey-header">
+    <h1>KOKO — AI at Work</h1>
+    <span class="progress-text" id="progressText">Introduction</span>
+</div>
+<div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+
+    <!-- ══ INTRO ══ -->
+    <div class="section active" id="section-0">
+        <div class="koko-mark">KOKO</div>
+        <h1 class="intro-title">How are we working with AI?</h1>
+        <p class="intro-body">We're putting together a plan for how KOKO uses AI — and we want it to be shaped by the people who actually do the work.</p>
+        <p class="intro-body">This survey is completely anonymous. No names, no emails, nothing that could identify you. We only ask for your department so we can spot patterns across teams and make sure nobody gets left behind.</p>
+        <p class="intro-body">There are no right or wrong answers. Be as honest as you can — that's the only thing that makes this useful.</p>
+        <div class="intro-note">
+            <strong>On anonymity:</strong> Individual responses will never be shared. Results are only reported at department level, and only where a group is large enough that no individual could be identified. We'll share the findings back with the whole company and use them to shape how we move forward together.
+        </div>
+        <p class="time-note">Takes around 10–12 minutes.</p>
+        <button class="btn btn-primary" onclick="nextSection()">Let's start →</button>
+    </div>
+
+    <!-- ══ SECTION 1: About You ══ -->
+    <div class="section" id="section-1">
+        <div class="section-label">Section 1 of 10</div>
+        <h2 class="section-title">About you</h2>
+        <p class="section-description">These questions help us understand patterns across the company. No individual responses are ever shared.</p>
+
+        <div class="question">
+            <div class="question-label">Which department are you in? <span class="req">*</span></div>
+            <select id="q1" onchange="handleDepartmentChange()" required>
+                <option value="">Select your department</option>
+                <option value="Operations">Operations</option>
+                <option value="Front of house team management">Front of house team management</option>
+                <option value="Accounts & payables">Accounts & payables</option>
+                <option value="Design">Design</option>
+                <option value="Membership sales">Membership sales</option>
+                <option value="Membership events">Membership events</option>
+                <option value="Membership services">Membership services</option>
+                <option value="Corporate outreach & sales">Corporate outreach & sales</option>
+                <option value="Reservations">Reservations</option>
+                <option value="Programming & events">Programming & events</option>
+                <option value="Event management & sales">Event management & sales</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Partnership services">Partnership services</option>
+                <option value="HR">HR</option>
+                <option value="Other">Other</option>
+            </select>
+            <div class="error-msg" id="q1-err">Please select your department.</div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Which best describes your level? <span class="req">*</span></div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q2" value="Junior"><span class="option-text">Junior</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Mid-level"><span class="option-text">Mid-level</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Senior"><span class="option-text">Senior</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Manager or above"><span class="option-text">Manager or above</span></label>
+            </div>
+            <div class="error-msg" id="q2-err">Please select your level.</div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How long have you worked at KOKO? <span class="req">*</span></div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q3" value="Under 1 year"><span class="option-text">Under 1 year</span></label>
+                <label class="radio-option"><input type="radio" name="q3" value="1–3 years"><span class="option-text">1–3 years</span></label>
+                <label class="radio-option"><input type="radio" name="q3" value="3 years or more"><span class="option-text">3 years or more</span></label>
+            </div>
+            <div class="error-msg" id="q3-err">Please select how long you've worked here.</div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 2: Current Landscape ══ -->
+    <div class="section" id="section-2">
+        <div class="section-label">Section 2 of 10</div>
+        <h2 class="section-title">Current landscape</h2>
+        <p class="section-description">How you're working right now — no judgement either way.</p>
+
+        <div class="question">
+            <div class="question-label">Which AI tools have you used in the last three months, for any purpose?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="ChatGPT (Free)"><span class="option-text">ChatGPT (Free)</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="ChatGPT Plus or Team"><span class="option-text">ChatGPT Plus or Team</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Claude (Anthropic)"><span class="option-text">Claude (Anthropic)</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Microsoft Copilot"><span class="option-text">Microsoft Copilot</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Google Gemini"><span class="option-text">Google Gemini</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Notion AI"><span class="option-text">Notion AI</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Canva AI / Magic Write"><span class="option-text">Canva AI / Magic Write</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Adobe Firefly / Generative Fill"><span class="option-text">Adobe Firefly / Generative Fill</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Midjourney / DALL-E or other image tools"><span class="option-text">Midjourney / DALL-E or other image tools</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Grammarly"><span class="option-text">Grammarly</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Otter.ai or other transcription tools"><span class="option-text">Otter.ai or other transcription tools</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="HubSpot AI features"><span class="option-text">HubSpot AI features</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Sprout Social AI features"><span class="option-text">Sprout Social AI features</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Meta Advantage+ / AI ad tools"><span class="option-text">Meta Advantage+ / AI ad tools</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Excel or Google Sheets AI features"><span class="option-text">Excel or Google Sheets AI features</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="Other" onchange="toggleOther('q4-other', this)"><span class="option-text">Other</span></label>
+                <input type="text" id="q4-other" class="other-input" placeholder="Please specify...">
+                <label class="checkbox-option"><input type="checkbox" name="q4" value="None of the above"><span class="option-text">None of the above</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Where are you using AI tools?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q5" value="For personal use only"><span class="option-text">For personal use only</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q5" value="For work tasks"><span class="option-text">For work tasks</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q5" value="Both personal and work"><span class="option-text">Both personal and work</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Which work tasks do you currently use AI for?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Writing or editing text"><span class="option-text">Writing or editing text</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Research and information gathering"><span class="option-text">Research and information gathering</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Summarising documents or emails"><span class="option-text">Summarising documents or emails</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Brainstorming and ideas"><span class="option-text">Brainstorming and ideas</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Image or visual creation"><span class="option-text">Image or visual creation</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Data analysis or spotting patterns"><span class="option-text">Data analysis or spotting patterns</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Drafting customer or client communications"><span class="option-text">Drafting customer or client communications</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Building presentations or decks"><span class="option-text">Building presentations or decks</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Automating repetitive tasks"><span class="option-text">Automating repetitive tasks</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Translating content"><span class="option-text">Translating content</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Scheduling or admin"><span class="option-text">Scheduling or admin</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="Other" onchange="toggleOther('q6-other', this)"><span class="option-text">Other</span></label>
+                <input type="text" id="q6-other" class="other-input" placeholder="Please describe...">
+                <label class="checkbox-option"><input type="checkbox" name="q6" value="I don't use AI for work yet"><span class="option-text">I don't use AI for work yet</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How often do you use AI tools for work?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q7" value="Never"><span class="option-text">Never</span></label>
+                <label class="radio-option"><input type="radio" name="q7" value="Occasionally"><span class="option-text">Occasionally</span></label>
+                <label class="radio-option"><input type="radio" name="q7" value="Weekly"><span class="option-text">Weekly</span></label>
+                <label class="radio-option"><input type="radio" name="q7" value="Daily"><span class="option-text">Daily</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Are you using any AI tools that haven't been officially introduced or endorsed at KOKO?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q8" value="Yes"><span class="option-text">Yes</span></label>
+                <label class="radio-option"><input type="radio" name="q8" value="No"><span class="option-text">No</span></label>
+                <label class="radio-option"><input type="radio" name="q8" value="Not sure"><span class="option-text">Not sure</span></label>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 3: Platforms & Features ══ -->
+    <div class="section" id="section-3">
+        <div class="section-label">Section 3 of 10</div>
+        <h2 class="section-title">Platforms and features</h2>
+        <p class="section-description">What you're actually using — and what you wish you had.</p>
+
+        <div class="question">
+            <div class="question-label">Which specific features do you use most?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Writing or editing copy"><span class="option-text">Writing or editing copy</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Summarising long documents or emails"><span class="option-text">Summarising long documents or emails</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Generating ideas or brainstorming"><span class="option-text">Generating ideas or brainstorming</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Creating or editing images"><span class="option-text">Creating or editing images</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Transcribing meetings or calls"><span class="option-text">Transcribing meetings or calls</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Analysing data or identifying patterns"><span class="option-text">Analysing data or identifying patterns</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Drafting customer or client responses"><span class="option-text">Drafting customer or client responses</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Building presentations or decks"><span class="option-text">Building presentations or decks</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Automating repetitive tasks"><span class="option-text">Automating repetitive tasks</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Translating content"><span class="option-text">Translating content</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Researching topics or competitors"><span class="option-text">Researching topics or competitors</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Scheduling or calendar management"><span class="option-text">Scheduling or calendar management</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Other" onchange="toggleOther('q9-other', this)"><span class="option-text">Other</span></label>
+                <input type="text" id="q9-other" class="other-input" placeholder="Please describe...">
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Are you using AI for any design or creative output?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q_creative" value="Creating visuals (images, graphics, artwork)"><span class="option-text">Creating visuals (images, graphics, artwork)</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q_creative" value="Animation"><span class="option-text">Animation</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q_creative" value="Music or audio"><span class="option-text">Music or audio</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q_creative" value="Editing documents or written content"><span class="option-text">Editing documents or written content</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q_creative" value="Other" onchange="toggleOther('q_creative-other', this)"><span class="option-text">Other</span></label>
+                <input type="text" id="q_creative-other" class="other-input" placeholder="Please describe...">
+                <label class="checkbox-option"><input type="checkbox" name="q_creative" value="Not applicable to my role"><span class="option-text">Not applicable to my role</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Which features do you wish you had access to that you currently don't?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q10" placeholder="Tell us what would make your work easier..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How satisfied are you with the AI tools currently available to you for work?</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all satisfied</span><span class="likert-end">Very satisfied</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q11" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q11" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q11" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q11" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q11" value="5"><span>5</span></label>
+                </div>
+                <div class="likert-na"><input type="radio" name="q11" value="N/A" id="q11na"><label for="q11na">N/A — not currently using any tools</label></div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Were you aware that the following tools you may already use have built-in AI features?</div>
+            <div class="question-hint">Select any you weren't aware of</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="Microsoft Copilot in Word, Outlook and Teams"><span class="option-text">Microsoft Copilot in Word, Outlook and Teams</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="Canva AI / Magic Write"><span class="option-text">Canva AI / Magic Write</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="Sprout Social AI features"><span class="option-text">Sprout Social AI features</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="Google Workspace AI"><span class="option-text">Google Workspace AI</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="HubSpot AI"><span class="option-text">HubSpot AI</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="Adobe Firefly"><span class="option-text">Adobe Firefly</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="I was aware of all of these"><span class="option-text">I was aware of all of these</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q12" value="I wasn't aware of any of these"><span class="option-text">I wasn't aware of any of these</span></label>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 4: Role Scenario ══ -->
+    <div class="section" id="section-4">
+        <div class="section-label">Section 4 of 10</div>
+        <h2 class="section-title">A scenario from your role</h2>
+        <p class="section-description">A quick situation to help us understand how you'd approach AI in practice.</p>
+
+        <div class="question">
+            <!-- Creative -->
+            <div class="scenario-q" id="sc-Creative" style="display:none">
+                <div class="question-label">You need to generate 10 visual concept options for a campaign brief. Would you use an AI image tool to explore ideas?</div>
+            </div>
+            <!-- Event Sales -->
+            <div class="scenario-q" id="sc-Event Sales" style="display:none">
+                <div class="question-label">You've just finished a client call and need to send a follow-up proposal. Would you use AI to help draft it?</div>
+            </div>
+            <!-- Customer Service -->
+            <div class="scenario-q" id="sc-Customer Service" style="display:none">
+                <div class="question-label">A guest sends a complaint late in the evening. Would you use AI to draft a response for review the next morning?</div>
+            </div>
+            <!-- Copywriting -->
+            <div class="scenario-q" id="sc-Copywriting" style="display:none">
+                <div class="question-label">You need to produce five variations of a tagline for a campaign. Would you use AI to generate a starting point?</div>
+            </div>
+            <!-- Policy -->
+            <div class="scenario-q" id="sc-Policy" style="display:none">
+                <div class="question-label">You need to review a lengthy document and pull out the key points. Would you use AI to summarise it first?</div>
+            </div>
+            <!-- Finance -->
+            <div class="scenario-q" id="sc-Finance & Data Management" style="display:none">
+                <div class="question-label">You need to summarise three months of spend data into a one-page overview. Would you use AI to help structure it?</div>
+            </div>
+            <!-- Marketing -->
+            <div class="scenario-q" id="sc-Marketing & Social" style="display:none">
+                <div class="question-label">You need a first draft of a caption series for an upcoming campaign. Would you use AI to generate options to work from?</div>
+            </div>
+            <!-- Default (Operations, HR, Other) -->
+            <div class="scenario-q" id="sc-default" style="display:none">
+                <div class="question-label">You have a time-consuming task that involves processing or organising a large amount of information. Would you consider using AI to help?</div>
+            </div>
+
+            <div class="radio-group" style="margin-top: 14px;">
+                <label class="radio-option"><input type="radio" name="q13" value="Yes, I already do this"><span class="option-text">Yes, I already do this</span></label>
+                <label class="radio-option"><input type="radio" name="q13" value="Yes, I would but I don't know how"><span class="option-text">Yes, I would but I don't know how</span></label>
+                <label class="radio-option"><input type="radio" name="q13" value="I'd want to but I'm not sure it's allowed"><span class="option-text">I'd want to but I'm not sure it's allowed</span></label>
+                <label class="radio-option"><input type="radio" name="q13" value="No, I'd prefer not to"><span class="option-text">No, I'd prefer not to</span></label>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 5: Confidence & Comfort ══ -->
+    <div class="section" id="section-5">
+        <div class="section-label">Section 5 of 10</div>
+        <h2 class="section-title">Confidence and comfort</h2>
+        <p class="section-description">Rate how you feel — 1 being not at all, 5 being very.</p>
+
+        <div class="question">
+            <div class="question-label">I feel confident using AI tools relevant to my role.</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all confident</span><span class="likert-end">Very confident</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q14" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q14" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q14" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q14" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q14" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">I understand what AI can and can't do well in my area of work.</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all</span><span class="likert-end">Very well</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q15" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q15" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q15" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q15" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q15" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">I understand how AI tools process and store the information I put into them.</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all</span><span class="likert-end">Very well</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q16" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q16" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q16" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q16" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q16" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">I feel comfortable experimenting with new tools without worrying about making mistakes.</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all</span><span class="likert-end">Very comfortable</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q17" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q17" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q17" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q17" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q17" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">I know where to go if I have a question about using AI at work.</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all clear</span><span class="likert-end">Very clear</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q18" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q18" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q18" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q18" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q18" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Is there a specific skill or area where you'd like more confidence with AI?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q19" placeholder="e.g. I'd like to understand how to use AI for data analysis..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 6: Data & Privacy ══ -->
+    <div class="section" id="section-6">
+        <div class="section-label">Section 6 of 10</div>
+        <h2 class="section-title">Data and privacy</h2>
+        <p class="section-description">These questions help us understand where guidance is most needed. There are no wrong answers.</p>
+
+        <div class="question">
+            <div class="question-label">Have you ever inputted any of the following into an AI tool for work purposes?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Customer names or contact details"><span class="option-text">Customer names or contact details</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Internal financial information"><span class="option-text">Internal financial information</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Staff or HR information"><span class="option-text">Staff or HR information</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Contract or legal documents"><span class="option-text">Contract or legal documents</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Unpublished creative or campaign content"><span class="option-text">Unpublished creative or campaign content</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Event or venue operational data"><span class="option-text">Event or venue operational data</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="Guest, member or ticket buyer information"><span class="option-text">Guest, member or ticket buyer information</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="None of the above"><span class="option-text">None of the above</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="I'm not sure what would count"><span class="option-text">I'm not sure what would count</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How confident are you that you know what information is and isn't safe to put into an AI tool?</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all confident</span><span class="likert-end">Very confident</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q21" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q21" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q21" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q21" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q21" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Has anyone ever given you guidance on data privacy and AI at KOKO?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q22" value="Yes"><span class="option-text">Yes</span></label>
+                <label class="radio-option"><input type="radio" name="q22" value="No"><span class="option-text">No</span></label>
+                <label class="radio-option"><input type="radio" name="q22" value="I'm not sure"><span class="option-text">I'm not sure</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Would clearer guidelines on what you can and can't share with AI tools be useful?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q23" value="Yes, definitely"><span class="option-text">Yes, definitely</span></label>
+                <label class="radio-option"><input type="radio" name="q23" value="It would help"><span class="option-text">It would help</span></label>
+                <label class="radio-option"><input type="radio" name="q23" value="I already feel clear on this"><span class="option-text">I already feel clear on this</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Do you have any concerns about how AI tools handle the data you input?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q24" placeholder="Share any concerns here..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 7: Attitudes ══ -->
+    <div class="section" id="section-7">
+        <div class="section-label">Section 7 of 10</div>
+        <h2 class="section-title">How you feel about it</h2>
+        <p class="section-description">How you feel is just as important as what you're doing.</p>
+
+        <div class="question">
+            <div class="question-label">How do you personally feel about AI becoming more central to how we work at KOKO?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q25" value="Excited — I think this is a real opportunity"><span class="option-text">Excited — I think this is a real opportunity</span></label>
+                <label class="radio-option"><input type="radio" name="q25" value="Cautiously optimistic — I can see the potential but have questions"><span class="option-text">Cautiously optimistic — I can see the potential but have questions</span></label>
+                <label class="radio-option"><input type="radio" name="q25" value="Uncertain — I haven't formed a view yet"><span class="option-text">Uncertain — I haven't formed a view yet</span></label>
+                <label class="radio-option"><input type="radio" name="q25" value="Uncomfortable — I have concerns I'd like to raise"><span class="option-text">Uncomfortable — I have concerns I'd like to raise</span></label>
+                <label class="radio-option"><input type="radio" name="q25" value="Opposed — I don't think this is the right direction"><span class="option-text">Opposed — I don't think this is the right direction</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">If you have concerns, what are they most related to?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Job security or role changes"><span class="option-text">Job security or role changes</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Quality and integrity of creative output"><span class="option-text">Quality and integrity of creative output</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Data privacy and security"><span class="option-text">Data privacy and security</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Losing skills or becoming over-reliant on tools"><span class="option-text">Losing skills or becoming over-reliant on tools</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Ethical concerns about AI generally"><span class="option-text">Ethical concerns about AI generally</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Not having enough time or support to learn"><span class="option-text">Not having enough time or support to learn</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="Feeling left behind if I don't adopt it quickly enough"><span class="option-text">Feeling left behind if I don't adopt it quickly enough</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q26" value="I don't have concerns"><span class="option-text">I don't have concerns</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How much do you feel you know about how AI tools actually work?</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Nothing at all</span><span class="likert-end">I understand it well</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q27" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q27" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q27" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q27" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q27" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Do you think AI use should be consistent across KOKO, or should each department set its own approach?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q28" value="A company-wide consistent approach"><span class="option-text">A company-wide consistent approach</span></label>
+                <label class="radio-option"><input type="radio" name="q28" value="Department-led flexibility"><span class="option-text">Department-led flexibility</span></label>
+                <label class="radio-option"><input type="radio" name="q28" value="A mix of both"><span class="option-text">A mix of both</span></label>
+                <label class="radio-option"><input type="radio" name="q28" value="I'm not sure"><span class="option-text">I'm not sure</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Do you have any concerns about the use of AI in creative output — for example, AI-generated copy, visuals or campaign ideas?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q29" value="Yes"><span class="option-text">Yes</span></label>
+                <label class="radio-option"><input type="radio" name="q29" value="No"><span class="option-text">No</span></label>
+                <label class="radio-option"><input type="radio" name="q29" value="It depends on the context"><span class="option-text">It depends on the context</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">If yes, what are those concerns?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q30" placeholder="Share your thoughts..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Have you ever felt pressure — from colleagues, workload or expectation — to use AI in a way you weren't comfortable with?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q31" value="Yes"><span class="option-text">Yes</span></label>
+                <label class="radio-option"><input type="radio" name="q31" value="No"><span class="option-text">No</span></label>
+                <label class="radio-option"><input type="radio" name="q31" value="Not sure"><span class="option-text">Not sure</span></label>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 8: Value & Barriers ══ -->
+    <div class="section" id="section-8">
+        <div class="section-label">Section 8 of 10</div>
+        <h2 class="section-title">Value and barriers</h2>
+        <p class="section-description">What's working, what's getting in the way, and what the team culture around AI looks like.</p>
+
+        <div class="question">
+            <div class="question-label">What do you think AI could genuinely help with in your role?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q32" placeholder="Be as specific as you like..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-label">What's the biggest barrier to you using AI more?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I don't know which tools to use"><span class="option-text">I don't know which tools to use</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I haven't had any training"><span class="option-text">I haven't had any training</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I'm not sure what's allowed"><span class="option-text">I'm not sure what's allowed</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I don't think it's relevant to my role"><span class="option-text">I don't think it's relevant to my role</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I have privacy or data concerns"><span class="option-text">I have privacy or data concerns</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I don't have time to learn"><span class="option-text">I don't have time to learn</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="I don't have access to the right tools"><span class="option-text">I don't have access to the right tools</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q33" value="Other" onchange="toggleOther('q33-other', this)"><span class="option-text">Other</span></label>
+                <input type="text" id="q33-other" class="other-input" placeholder="Please specify...">
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Do you feel your manager or team lead is supportive of experimenting with AI in your role?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q34" value="Yes"><span class="option-text">Yes</span></label>
+                <label class="radio-option"><input type="radio" name="q34" value="No"><span class="option-text">No</span></label>
+                <label class="radio-option"><input type="radio" name="q34" value="I'm not sure"><span class="option-text">I'm not sure</span></label>
+                <label class="radio-option"><input type="radio" name="q34" value="I haven't raised it"><span class="option-text">I haven't raised it</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Has your team ever discussed AI as part of how you work together?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q35" value="Yes, regularly"><span class="option-text">Yes, regularly</span></label>
+                <label class="radio-option"><input type="radio" name="q35" value="Once or twice"><span class="option-text">Once or twice</span></label>
+                <label class="radio-option"><input type="radio" name="q35" value="Never"><span class="option-text">Never</span></label>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 9: Time & Impact ══ -->
+    <div class="section" id="section-9">
+        <div class="section-label">Section 9 of 10</div>
+        <h2 class="section-title">Time and impact</h2>
+        <p class="section-description">Helping us understand where AI could create the most breathing room.</p>
+
+        <div class="question">
+            <div class="question-label">Roughly how many hours a week do you spend on tasks that feel repetitive or time-consuming?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q36" value="Under 2 hours"><span class="option-text">Under 2 hours</span></label>
+                <label class="radio-option"><input type="radio" name="q36" value="2–5 hours"><span class="option-text">2–5 hours</span></label>
+                <label class="radio-option"><input type="radio" name="q36" value="5–10 hours"><span class="option-text">5–10 hours</span></label>
+                <label class="radio-option"><input type="radio" name="q36" value="More than 10 hours"><span class="option-text">More than 10 hours</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How much of that do you think AI could realistically help with?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q37" value="None"><span class="option-text">None</span></label>
+                <label class="radio-option"><input type="radio" name="q37" value="A small amount"><span class="option-text">A small amount</span></label>
+                <label class="radio-option"><input type="radio" name="q37" value="About half"><span class="option-text">About half</span></label>
+                <label class="radio-option"><input type="radio" name="q37" value="Most of it"><span class="option-text">Most of it</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">If AI took care of some of that, what would you do with the time?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q38" placeholder="More creative work, client time, strategic thinking..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
+        </div>
+    </div>
+
+    <!-- ══ SECTION 10: Support & Closing ══ -->
+    <div class="section" id="section-10">
+        <div class="section-label">Section 10 of 10</div>
+        <h2 class="section-title">Support and what comes next</h2>
+        <p class="section-description">Last section. What would actually help, and how can we make this work for everyone.</p>
+
+        <div class="question">
+            <div class="question-label">What kind of support would be most useful to you?</div>
+            <div class="question-hint">Select all that apply</div>
+            <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="q39" value="A clear policy on what's allowed and what isn't"><span class="option-text">A clear policy on what's allowed and what isn't</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q39" value="Training sessions by role or department"><span class="option-text">Training sessions by role or department</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q39" value="A recommended list of tools per role"><span class="option-text">A recommended list of tools per role</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q39" value="A go-to person I can ask questions to"><span class="option-text">A go-to person I can ask questions to</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q39" value="Peer sharing of what's already working"><span class="option-text">Peer sharing of what's already working</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q39" value="Nothing — I'm happy with how I work currently"><span class="option-text">Nothing — I'm happy with how I work currently</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">How would you prefer to learn about AI tools?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q40" value="Group workshop"><span class="option-text">Group workshop</span></label>
+                <label class="radio-option"><input type="radio" name="q40" value="Self-paced online resource"><span class="option-text">Self-paced online resource</span></label>
+                <label class="radio-option"><input type="radio" name="q40" value="One-to-one session"><span class="option-text">One-to-one session</span></label>
+                <label class="radio-option"><input type="radio" name="q40" value="Team session with my department"><span class="option-text">Team session with my department</span></label>
+                <label class="radio-option"><input type="radio" name="q40" value="I don't want to — I'm happy as I am"><span class="option-text">I don't want to — I'm happy as I am</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">I feel comfortable raising an idea about using AI in my role with my manager.</div>
+            <div class="likert-wrap">
+                <div class="likert-ends"><span class="likert-end">Not at all comfortable</span><span class="likert-end">Very comfortable</span></div>
+                <div class="likert-scale">
+                    <label class="likert-btn"><input type="radio" name="q41" value="1"><span>1</span></label>
+                    <label class="likert-btn"><input type="radio" name="q41" value="2"><span>2</span></label>
+                    <label class="likert-btn"><input type="radio" name="q41" value="3"><span>3</span></label>
+                    <label class="likert-btn"><input type="radio" name="q41" value="4"><span>4</span></label>
+                    <label class="likert-btn"><input type="radio" name="q41" value="5"><span>5</span></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Would you be interested in being part of a small working group to help shape how we approach AI at KOKO?</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q42" value="Yes"><span class="option-text">Yes</span></label>
+                <label class="radio-option"><input type="radio" name="q42" value="Maybe"><span class="option-text">Maybe</span></label>
+                <label class="radio-option"><input type="radio" name="q42" value="No"><span class="option-text">No</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Would you be happy to have a follow-up conversation about your experience?</div>
+            <div class="question-hint">Completely voluntary. Saying yes does not affect your anonymity for this survey.</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="q43" value="Yes — someone can reach out to me"><span class="option-text">Yes — someone can reach out to me</span></label>
+                <label class="radio-option"><input type="radio" name="q43" value="No thank you"><span class="option-text">No thank you</span></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Complete this sentence: The thing I most want us to understand about my experience of AI at work is...</div>
+            <div class="question-hint">Optional — no word limit</div>
+            <textarea id="q44" placeholder="..." style="min-height: 120px;"></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-label">Is there anything else you'd like to share?</div>
+            <div class="question-hint">Optional</div>
+            <textarea id="q45" placeholder="Anything at all..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit →</button>
+        </div>
+    </div>
+
+    <!-- ══ SUCCESS ══ -->
+    <div class="success-screen" id="successScreen">
+        <div class="success-check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h2 class="section-title" style="text-align:center; margin-bottom: 16px;">Thank you.</h2>
+        <p style="font-size: 16px; color: #666; line-height: 1.8; max-width: 460px; margin: 0 auto;">Your response has been submitted. We'll share what we find back with the whole company, along with the steps we're planning to take as a result.</p>
+    </div>
+
+</div>
+
+<script>
+    let current = 0;
+    const TOTAL = 11; // sections 0–10
+
+    const SECTION_LABELS = [
+        'Introduction','About You','Current Landscape','Platforms & Features',
+        'Your Role','Confidence','Data & Privacy','How You Feel',
+        'Value & Barriers','Time & Impact','Support & Closing'
+    ];
+
+    // ── Show/hide sections ──────────────────────────────────────
+    function showSection(n) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const el = document.getElementById('section-' + n);
+        if (el) el.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const pct = Math.round((n / (TOTAL - 1)) * 100);
+        document.getElementById('progressBar').style.width = pct + '%';
+        document.getElementById('progressText').textContent = SECTION_LABELS[n] || '';
+    }
+
+    function nextSection() {
+        if (current === 1 && !validateSection1()) return;
+        if (current < TOTAL - 1) { current++; showSection(current); }
+    }
+
+    function prevSection() {
+        if (current > 0) { current--; showSection(current); }
+    }
+
+    // ── Section 1 validation ────────────────────────────────────
+    function validateSection1() {
+        let ok = true;
+        if (!document.getElementById('q1').value) {
+            document.getElementById('q1-err').classList.add('visible'); ok = false;
+        } else {
+            document.getElementById('q1-err').classList.remove('visible');
+        }
+        if (!document.querySelector('input[name="q2"]:checked')) {
+            document.getElementById('q2-err').classList.add('visible'); ok = false;
+        } else {
+            document.getElementById('q2-err').classList.remove('visible');
+        }
+        if (!document.querySelector('input[name="q3"]:checked')) {
+            document.getElementById('q3-err').classList.add('visible'); ok = false;
+        } else {
+            document.getElementById('q3-err').classList.remove('visible');
+        }
+        return ok;
+    }
+
+    // ── Department scenario branching ───────────────────────────
+    const SCENARIO_MAP = {
+        'Design':                      'sc-Creative',
+        'Marketing':                   'sc-Marketing & Social',
+        'Accounts & payables':         'sc-Finance & Data Management',
+        'Front of house team management': 'sc-Customer Service',
+        'Membership services':         'sc-Customer Service',
+        'Reservations':                'sc-Customer Service',
+        'Membership sales':            'sc-Event Sales',
+        'Corporate outreach & sales':  'sc-Event Sales',
+        'Partnership services':        'sc-Event Sales',
+        'Event management & sales':    'sc-Event Sales',
+        'Programming & events':        'sc-Event Sales',
+        'Membership events':           'sc-Event Sales',
+    };
+
+    function handleDepartmentChange() {
+        const dept = document.getElementById('q1').value;
+        document.querySelectorAll('.scenario-q').forEach(el => el.style.display = 'none');
+        const target = SCENARIO_MAP[dept] || 'sc-default';
+        const el = document.getElementById(target);
+        if (el) el.style.display = 'block';
+    }
+
+    // ── Other field toggle ──────────────────────────────────────
+    function toggleOther(id, cb) {
+        const el = document.getElementById(id);
+        el.classList.toggle('visible', cb.checked);
+        if (!cb.checked) el.value = '';
+    }
+
+    // ── Visual state for selections ─────────────────────────────
+    document.addEventListener('change', function(e) {
+        if (e.target.type === 'radio') {
+            const grp = e.target.closest('.radio-group');
+            if (grp) {
+                grp.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+                e.target.closest('.radio-option')?.classList.add('selected');
+            }
+        }
+        if (e.target.type === 'checkbox') {
+            e.target.closest('.checkbox-option')?.classList.toggle('selected', e.target.checked);
+        }
+    });
+
+    // ── Collect all answers ─────────────────────────────────────
+    function collectData() {
+        const d = { timestamp: new Date().toISOString() };
+
+        d.q1_department = document.getElementById('q1').value;
+
+        // Single-select radios
+        ['q2','q3','q7','q8','q11','q13','q14','q15','q16','q17','q18',
+         'q21','q22','q23','q25','q27','q28','q29','q31','q34','q35',
+         'q36','q37','q40','q41','q42','q43'].forEach(q => {
+            const el = document.querySelector(`input[name="${q}"]:checked`);
+            d[q] = el ? el.value : '';
+        });
+
+        // Multi-select checkboxes
+        ['q4','q5','q6','q9','q_creative','q12','q20','q26','q33','q39'].forEach(q => {
+            d[q] = [...document.querySelectorAll(`input[name="${q}"]:checked`)]
+                .map(el => el.value).join(' | ');
+        });
+
+        // Other text fields
+        ['q4-other','q6-other','q9-other','q_creative-other','q33-other'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.value) d[id] = el.value;
+        });
+
+        // Open text
+        ['q10','q19','q24','q30','q32','q38','q44','q45'].forEach(id => {
+            const el = document.getElementById(id);
+            d[id] = el ? el.value.trim() : '';
+        });
+
+        return d;
+    }
+
+    // ── Submit ──────────────────────────────────────────────────
+    async function submitForm() {
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = 'Submitting...';
+        btn.disabled = true;
+
+        const data = collectData();
+
+        // ▶ Replace this with your Google Apps Script web app URL (see SETUP_GUIDE.md)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyW_h4u2i2ZQQoMr8jUUFdZYW9gPtfu8CuUNKI4a3duz4pPgWhc89ClFF4UfgSO5Tak/exec';
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } catch(err) {
+            // no-cors prevents reading the response — if no network error, treat as success
+        }
+
+        showSuccess();
+    }
+
+    function showSuccess() {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById('successScreen').classList.add('active');
+        document.getElementById('progressBar').style.width = '100%';
+        document.getElementById('progressText').textContent = 'Complete';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Init ────────────────────────────────────────────────────
+    showSection(0);
+    document.querySelectorAll('.scenario-q').forEach(el => el.style.display = 'none');
+</script>
+</body>
+</html>
