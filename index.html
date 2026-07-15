@@ -163,30 +163,30 @@
         <div class="intro-note">
             <strong>On anonymity:</strong> Individual responses will never be shared. Results are only reported at department level, and only where a group is large enough that no individual could be identified. We'll share the findings back with the whole company and use them to shape how we move forward together.
         </div>
-        <p class="time-note">Takes around 10–12 minutes.</p>
+        <p class="time-note">Takes around 5–6 minutes.</p>
         <button class="btn btn-primary" onclick="nextSection()">Let's start →</button>
     </div>
 
     <!-- ══ SECTION 1: About You ══ -->
     <div class="section" id="section-1">
-        <div class="section-label">Section 1 of 10</div>
+        <div class="section-label">Section 1 of 9</div>
         <h2 class="section-title">About you</h2>
         <p class="section-description">These questions help us understand patterns across the company. No individual responses are ever shared.</p>
 
         <div class="question">
             <div class="question-label">Which department are you in? <span class="req">*</span></div>
-            <select id="q1" onchange="handleDepartmentChange()" required>
+            <select id="q1" required>
                 <option value="">Select your department</option>
                 <option value="Operations">Operations</option>
                 <option value="Front of House">Front of House</option>
-                <option value="Accounts & Payables">Accounts & Payables</option>
+                <option value="Accounts & Payables">Accounts &amp; Payables</option>
                 <option value="Design">Design</option>
-                <option value="Membership Sales & Events">Membership Sales & Events</option>
+                <option value="Membership Sales & Events">Membership Sales &amp; Events</option>
                 <option value="Membership Guest Relations">Membership Guest Relations</option>
-                <option value="Corporate Outreach & Sales">Corporate Outreach & Sales</option>
+                <option value="Corporate Outreach & Sales">Corporate Outreach &amp; Sales</option>
                 <option value="Reservations">Reservations</option>
                 <option value="Live Programming">Live Programming</option>
-                <option value="Event Management & Sales">Event Management & Sales</option>
+                <option value="Event Management & Sales">Event Management &amp; Sales</option>
                 <option value="Marketing">Marketing</option>
                 <option value="Partnership Sales">Partnership Sales</option>
                 <option value="HR">HR</option>
@@ -199,21 +199,10 @@
             <div class="question-label">Which best describes your level? <span class="req">*</span></div>
             <div class="radio-group">
                 <label class="radio-option"><input type="radio" name="q2" value="Junior"><span class="option-text">Junior</span></label>
-                <label class="radio-option"><input type="radio" name="q2" value="Manager"><span class="option-text">Manager</span></label>
-                <label class="radio-option"><input type="radio" name="q2" value="Head of Department"><span class="option-text">Head of Department</span></label>
-                <label class="radio-option"><input type="radio" name="q2" value="Executive or above"><span class="option-text">Executive or above</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Middle Management"><span class="option-text">Middle Management</span></label>
+                <label class="radio-option"><input type="radio" name="q2" value="Senior"><span class="option-text">Senior</span></label>
             </div>
             <div class="error-msg" id="q2-err">Please select your level.</div>
-        </div>
-
-        <div class="question">
-            <div class="question-label">How long have you worked at KOKO? <span class="req">*</span></div>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="q3" value="Under 1 year"><span class="option-text">Under 1 year</span></label>
-                <label class="radio-option"><input type="radio" name="q3" value="1–3 years"><span class="option-text">1–3 years</span></label>
-                <label class="radio-option"><input type="radio" name="q3" value="3 years or more"><span class="option-text">3 years or more</span></label>
-            </div>
-            <div class="error-msg" id="q3-err">Please select how long you've worked here.</div>
         </div>
 
         <div class="nav-buttons">
@@ -224,7 +213,7 @@
 
     <!-- ══ SECTION 2: Current Landscape ══ -->
     <div class="section" id="section-2">
-        <div class="section-label">Section 2 of 10</div>
+        <div class="section-label">Section 2 of 9</div>
         <h2 class="section-title">Current landscape</h2>
         <p class="section-description">How you're working right now — no judgement either way.</p>
 
@@ -254,34 +243,9 @@
         </div>
 
         <div class="question">
-            <div class="question-label">Where are you using AI tools?</div>
-            <div class="question-hint">Select all that apply</div>
-            <div class="checkbox-group">
-                <label class="checkbox-option"><input type="checkbox" name="q5" value="For personal use only"><span class="option-text">For personal use only</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q5" value="For work tasks"><span class="option-text">For work tasks</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q5" value="Both personal and work"><span class="option-text">Both personal and work</span></label>
-            </div>
-        </div>
-
-        <div class="question">
-            <div class="question-label">Which work tasks do you currently use AI for?</div>
-            <div class="question-hint">Select all that apply</div>
-            <div class="checkbox-group">
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Writing or editing text"><span class="option-text">Writing or editing text</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Research and information gathering"><span class="option-text">Research and information gathering</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Summarising documents or emails"><span class="option-text">Summarising documents or emails</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Brainstorming and ideas"><span class="option-text">Brainstorming and ideas</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Image or visual creation"><span class="option-text">Image or visual creation</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Data analysis or spotting patterns"><span class="option-text">Data analysis or spotting patterns</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Drafting customer or client communications"><span class="option-text">Drafting customer or client communications</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Building presentations or decks"><span class="option-text">Building presentations or decks</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Automating repetitive tasks"><span class="option-text">Automating repetitive tasks</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Translating content"><span class="option-text">Translating content</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Scheduling or admin"><span class="option-text">Scheduling or admin</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="Other" onchange="toggleOther('q6-other', this)"><span class="option-text">Other</span></label>
-                <input type="text" id="q6-other" class="other-input" placeholder="Please describe...">
-                <label class="checkbox-option"><input type="checkbox" name="q6" value="I don't use AI for work yet"><span class="option-text">I don't use AI for work yet</span></label>
-            </div>
+            <div class="question-label">Which work tasks do you currently use AI for — or are curious about using it for?</div>
+            <div class="question-hint">Optional — describe in your own words. e.g. writing emails, summarising reports, creating visuals, scheduling, strategy documents, forecasting…</div>
+            <textarea id="q6" placeholder="Tell us what you're using AI for, or what you'd like to try..."></textarea>
         </div>
 
         <div class="question">
@@ -311,7 +275,7 @@
 
     <!-- ══ SECTION 3: Platforms & Features ══ -->
     <div class="section" id="section-3">
-        <div class="section-label">Section 3 of 10</div>
+        <div class="section-label">Section 3 of 9</div>
         <h2 class="section-title">Platforms and features</h2>
         <p class="section-description">What you're actually using — and what you wish you had.</p>
 
@@ -331,6 +295,9 @@
                 <label class="checkbox-option"><input type="checkbox" name="q9" value="Translating content"><span class="option-text">Translating content</span></label>
                 <label class="checkbox-option"><input type="checkbox" name="q9" value="Researching topics or competitors"><span class="option-text">Researching topics or competitors</span></label>
                 <label class="checkbox-option"><input type="checkbox" name="q9" value="Scheduling or calendar management"><span class="option-text">Scheduling or calendar management</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Creating strategy documents"><span class="option-text">Creating strategy documents</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Creating org charts or team structures"><span class="option-text">Creating org charts or team structures</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q9" value="Scenario planning or forecasting"><span class="option-text">Scenario planning or forecasting</span></label>
                 <label class="checkbox-option"><input type="checkbox" name="q9" value="Other" onchange="toggleOther('q9-other', this)"><span class="option-text">Other</span></label>
                 <input type="text" id="q9-other" class="other-input" placeholder="Please describe...">
             </div>
@@ -392,63 +359,9 @@
         </div>
     </div>
 
-    <!-- ══ SECTION 4: Role Scenario ══ -->
+    <!-- ══ SECTION 4: Confidence & Comfort ══ -->
     <div class="section" id="section-4">
-        <div class="section-label">Section 4 of 10</div>
-        <h2 class="section-title">A scenario from your role</h2>
-        <p class="section-description">A quick situation to help us understand how you'd approach AI in practice.</p>
-
-        <div class="question">
-            <!-- Creative -->
-            <div class="scenario-q" id="sc-Creative" style="display:none">
-                <div class="question-label">You need to generate 10 visual concept options for a campaign brief. Would you use an AI image tool to explore ideas?</div>
-            </div>
-            <!-- Event Sales -->
-            <div class="scenario-q" id="sc-Event Sales" style="display:none">
-                <div class="question-label">You've just finished a client call and need to send a follow-up proposal. Would you use AI to help draft it?</div>
-            </div>
-            <!-- Customer Service -->
-            <div class="scenario-q" id="sc-Customer Service" style="display:none">
-                <div class="question-label">A guest sends a complaint late in the evening. Would you use AI to draft a response for review the next morning?</div>
-            </div>
-            <!-- Copywriting -->
-            <div class="scenario-q" id="sc-Copywriting" style="display:none">
-                <div class="question-label">You need to produce five variations of a tagline for a campaign. Would you use AI to generate a starting point?</div>
-            </div>
-            <!-- Policy -->
-            <div class="scenario-q" id="sc-Policy" style="display:none">
-                <div class="question-label">You need to review a lengthy document and pull out the key points. Would you use AI to summarise it first?</div>
-            </div>
-            <!-- Finance -->
-            <div class="scenario-q" id="sc-Finance & Data Management" style="display:none">
-                <div class="question-label">You need to summarise three months of spend data into a one-page overview. Would you use AI to help structure it?</div>
-            </div>
-            <!-- Marketing -->
-            <div class="scenario-q" id="sc-Marketing & Social" style="display:none">
-                <div class="question-label">You need a first draft of a caption series for an upcoming campaign. Would you use AI to generate options to work from?</div>
-            </div>
-            <!-- Default (Operations, HR, Other) -->
-            <div class="scenario-q" id="sc-default" style="display:none">
-                <div class="question-label">You have a time-consuming task that involves processing or organising a large amount of information. Would you consider using AI to help?</div>
-            </div>
-
-            <div class="radio-group" style="margin-top: 14px;">
-                <label class="radio-option"><input type="radio" name="q13" value="Yes, I already do this"><span class="option-text">Yes, I already do this</span></label>
-                <label class="radio-option"><input type="radio" name="q13" value="Yes, I would but I don't know how"><span class="option-text">Yes, I would but I don't know how</span></label>
-                <label class="radio-option"><input type="radio" name="q13" value="I'd want to but I'm not sure it's allowed"><span class="option-text">I'd want to but I'm not sure it's allowed</span></label>
-                <label class="radio-option"><input type="radio" name="q13" value="No, I'd prefer not to"><span class="option-text">No, I'd prefer not to</span></label>
-            </div>
-        </div>
-
-        <div class="nav-buttons">
-            <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
-            <button class="btn btn-primary" onclick="nextSection()">Continue →</button>
-        </div>
-    </div>
-
-    <!-- ══ SECTION 5: Confidence & Comfort ══ -->
-    <div class="section" id="section-5">
-        <div class="section-label">Section 5 of 10</div>
+        <div class="section-label">Section 4 of 9</div>
         <h2 class="section-title">Confidence and comfort</h2>
         <p class="section-description">Rate how you feel — 1 being not at all, 5 being very.</p>
 
@@ -467,7 +380,7 @@
         </div>
 
         <div class="question">
-            <div class="question-label">I understand what AI can and can't do well in my area of work.</div>
+            <div class="question-label">I understand what AI can and can't do well, and how it handles the data I put into it.</div>
             <div class="likert-wrap">
                 <div class="likert-ends"><span class="likert-end">Not at all</span><span class="likert-end">Very well</span></div>
                 <div class="likert-scale">
@@ -476,20 +389,6 @@
                     <label class="likert-btn"><input type="radio" name="q15" value="3"><span>3</span></label>
                     <label class="likert-btn"><input type="radio" name="q15" value="4"><span>4</span></label>
                     <label class="likert-btn"><input type="radio" name="q15" value="5"><span>5</span></label>
-                </div>
-            </div>
-        </div>
-
-        <div class="question">
-            <div class="question-label">I understand how AI tools process and store the information I put into them.</div>
-            <div class="likert-wrap">
-                <div class="likert-ends"><span class="likert-end">Not at all</span><span class="likert-end">Very well</span></div>
-                <div class="likert-scale">
-                    <label class="likert-btn"><input type="radio" name="q16" value="1"><span>1</span></label>
-                    <label class="likert-btn"><input type="radio" name="q16" value="2"><span>2</span></label>
-                    <label class="likert-btn"><input type="radio" name="q16" value="3"><span>3</span></label>
-                    <label class="likert-btn"><input type="radio" name="q16" value="4"><span>4</span></label>
-                    <label class="likert-btn"><input type="radio" name="q16" value="5"><span>5</span></label>
                 </div>
             </div>
         </div>
@@ -534,14 +433,14 @@
         </div>
     </div>
 
-    <!-- ══ SECTION 6: Data & Privacy ══ -->
-    <div class="section" id="section-6">
-        <div class="section-label">Section 6 of 10</div>
+    <!-- ══ SECTION 5: Data & Privacy ══ -->
+    <div class="section" id="section-5">
+        <div class="section-label">Section 5 of 9</div>
         <h2 class="section-title">Data and privacy</h2>
         <p class="section-description">These questions help us understand where guidance is most needed. There are no wrong answers.</p>
 
         <div class="question">
-            <div class="question-label">Have you ever inputted any of the following into an AI tool for work purposes?</div>
+            <div class="question-label">Which of the following would you feel comfortable putting into an AI tool for work?</div>
             <div class="question-hint">Select all that apply</div>
             <div class="checkbox-group">
                 <label class="checkbox-option"><input type="checkbox" name="q20" value="Customer names or contact details"><span class="option-text">Customer names or contact details</span></label>
@@ -551,7 +450,7 @@
                 <label class="checkbox-option"><input type="checkbox" name="q20" value="Unpublished creative or campaign content"><span class="option-text">Unpublished creative or campaign content</span></label>
                 <label class="checkbox-option"><input type="checkbox" name="q20" value="Event or venue operational data"><span class="option-text">Event or venue operational data</span></label>
                 <label class="checkbox-option"><input type="checkbox" name="q20" value="Guest, member or ticket buyer information"><span class="option-text">Guest, member or ticket buyer information</span></label>
-                <label class="checkbox-option"><input type="checkbox" name="q20" value="None of the above"><span class="option-text">None of the above</span></label>
+                <label class="checkbox-option"><input type="checkbox" name="q20" value="None of the above"><span class="option-text">None of the above — I wouldn't be comfortable with any of these</span></label>
                 <label class="checkbox-option"><input type="checkbox" name="q20" value="I'm not sure what would count"><span class="option-text">I'm not sure what would count</span></label>
             </div>
         </div>
@@ -589,9 +488,9 @@
         </div>
 
         <div class="question">
-            <div class="question-label">Do you have any concerns about how AI tools handle the data you input?</div>
-            <div class="question-hint">Optional</div>
-            <textarea id="q24" placeholder="Share any concerns here..."></textarea>
+            <div class="question-label">Are there any tasks or workflows where data privacy concerns are stopping you from using AI?</div>
+            <div class="question-hint">Optional — be as specific as you like</div>
+            <textarea id="q24" placeholder="e.g. I avoid using AI for anything involving guest data, or I'm unsure whether I can use it to draft contracts..."></textarea>
         </div>
 
         <div class="nav-buttons">
@@ -600,9 +499,9 @@
         </div>
     </div>
 
-    <!-- ══ SECTION 7: Attitudes ══ -->
-    <div class="section" id="section-7">
-        <div class="section-label">Section 7 of 10</div>
+    <!-- ══ SECTION 6: Attitudes ══ -->
+    <div class="section" id="section-6">
+        <div class="section-label">Section 6 of 9</div>
         <h2 class="section-title">How you feel about it</h2>
         <p class="section-description">How you feel is just as important as what you're doing.</p>
 
@@ -666,12 +565,6 @@
         </div>
 
         <div class="question">
-            <div class="question-label">If yes, what are those concerns?</div>
-            <div class="question-hint">Optional</div>
-            <textarea id="q30" placeholder="Share your thoughts..."></textarea>
-        </div>
-
-        <div class="question">
             <div class="question-label">Have you ever felt pressure — from colleagues, workload or expectation — to use AI in a way you weren't comfortable with?</div>
             <div class="radio-group">
                 <label class="radio-option"><input type="radio" name="q31" value="Yes"><span class="option-text">Yes</span></label>
@@ -686,16 +579,16 @@
         </div>
     </div>
 
-    <!-- ══ SECTION 8: Value & Barriers ══ -->
-    <div class="section" id="section-8">
-        <div class="section-label">Section 8 of 10</div>
+    <!-- ══ SECTION 7: Value & Barriers ══ -->
+    <div class="section" id="section-7">
+        <div class="section-label">Section 7 of 9</div>
         <h2 class="section-title">Value and barriers</h2>
         <p class="section-description">What's working, what's getting in the way, and what the team culture around AI looks like.</p>
 
         <div class="question">
-            <div class="question-label">What do you think AI could genuinely help with in your role?</div>
-            <div class="question-hint">Optional</div>
-            <textarea id="q32" placeholder="Be as specific as you like..."></textarea>
+            <div class="question-label">What are the biggest friction points or time costs in your day-to-day work? Which of them do you think AI could realistically help with?</div>
+            <div class="question-hint">Optional — be as specific as you like</div>
+            <textarea id="q32" placeholder="e.g. I spend a lot of time formatting reports manually, or responding to the same types of enquiry repeatedly..."></textarea>
         </div>
 
         <div class="question">
@@ -739,36 +632,28 @@
         </div>
     </div>
 
-    <!-- ══ SECTION 9: Time & Impact ══ -->
-    <div class="section" id="section-9">
-        <div class="section-label">Section 9 of 10</div>
+    <!-- ══ SECTION 8: Time & Impact ══ -->
+    <div class="section" id="section-8">
+        <div class="section-label">Section 8 of 9</div>
         <h2 class="section-title">Time and impact</h2>
         <p class="section-description">Helping us understand where AI could create the most breathing room.</p>
 
         <div class="question">
-            <div class="question-label">Roughly how many hours a week do you spend on tasks that feel repetitive or time-consuming?</div>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="q36" value="Under 2 hours"><span class="option-text">Under 2 hours</span></label>
-                <label class="radio-option"><input type="radio" name="q36" value="2–5 hours"><span class="option-text">2–5 hours</span></label>
-                <label class="radio-option"><input type="radio" name="q36" value="5–10 hours"><span class="option-text">5–10 hours</span></label>
-                <label class="radio-option"><input type="radio" name="q36" value="More than 10 hours"><span class="option-text">More than 10 hours</span></label>
-            </div>
+            <div class="question-label">What repetitive or time-consuming tasks take up most of your time?</div>
+            <div class="question-hint">Think about the small, regular things — scheduling, formatting, responding to the same types of enquiry, generating reports…</div>
+            <textarea id="q38" placeholder="Describe the tasks that eat into your time most..." style="min-height: 120px;"></textarea>
         </div>
 
         <div class="question">
-            <div class="question-label">How much of that do you think AI could realistically help with?</div>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="q37" value="None"><span class="option-text">None</span></label>
-                <label class="radio-option"><input type="radio" name="q37" value="A small amount"><span class="option-text">A small amount</span></label>
-                <label class="radio-option"><input type="radio" name="q37" value="About half"><span class="option-text">About half</span></label>
-                <label class="radio-option"><input type="radio" name="q37" value="Most of it"><span class="option-text">Most of it</span></label>
-            </div>
+            <div class="question-label">What tasks are you most curious about using AI for?</div>
+            <div class="question-hint">Optional — even if you've never tried it</div>
+            <textarea id="q38b" placeholder="e.g. I'd love to try using AI to draft my weekly reports, or to help me plan team schedules..."></textarea>
         </div>
 
         <div class="question">
-            <div class="question-label">If AI took care of some of that, what would you do with the time?</div>
+            <div class="question-label">Which task in your role would you most like to be more efficient at?</div>
             <div class="question-hint">Optional</div>
-            <textarea id="q38" placeholder="More creative work, client time, strategic thinking..."></textarea>
+            <textarea id="q38c" placeholder="The thing I spend more time on than I'd like is..."></textarea>
         </div>
 
         <div class="nav-buttons">
@@ -777,9 +662,9 @@
         </div>
     </div>
 
-    <!-- ══ SECTION 10: Support & Closing ══ -->
-    <div class="section" id="section-10">
-        <div class="section-label">Section 10 of 10</div>
+    <!-- ══ SECTION 9: Support & Closing ══ -->
+    <div class="section" id="section-9">
+        <div class="section-label">Section 9 of 9</div>
         <h2 class="section-title">Support and what comes next</h2>
         <p class="section-description">Last section. What would actually help, and how can we make this work for everyone.</p>
 
@@ -839,18 +724,6 @@
             </div>
         </div>
 
-        <div class="question">
-            <div class="question-label">Complete this sentence: The thing I most want us to understand about my experience of AI at work is...</div>
-            <div class="question-hint">Optional — no word limit</div>
-            <textarea id="q44" placeholder="..." style="min-height: 120px;"></textarea>
-        </div>
-
-        <div class="question">
-            <div class="question-label">Is there anything else you'd like to share?</div>
-            <div class="question-hint">Optional</div>
-            <textarea id="q45" placeholder="Anything at all..."></textarea>
-        </div>
-
         <div class="nav-buttons">
             <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
             <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit →</button>
@@ -872,11 +745,11 @@
 
 <script>
     let current = 0;
-    const TOTAL = 11; // sections 0–10
+    const TOTAL = 10; // sections 0–9
 
     const SECTION_LABELS = [
         'Introduction','About You','Current Landscape','Platforms & Features',
-        'Your Role','Confidence','Data & Privacy','How You Feel',
+        'Confidence','Data & Privacy','How You Feel',
         'Value & Barriers','Time & Impact','Support & Closing'
     ];
 
@@ -913,35 +786,7 @@
         } else {
             document.getElementById('q2-err').classList.remove('visible');
         }
-        if (!document.querySelector('input[name="q3"]:checked')) {
-            document.getElementById('q3-err').classList.add('visible'); ok = false;
-        } else {
-            document.getElementById('q3-err').classList.remove('visible');
-        }
         return ok;
-    }
-
-    // ── Department scenario branching ───────────────────────────
-    const SCENARIO_MAP = {
-        'Design':                          'sc-Creative',
-        'Marketing':                       'sc-Marketing & Social',
-        'Accounts & Payables':             'sc-Finance & Data Management',
-        'Front of House':  'sc-Customer Service',
-        'Membership Guest Relations':      'sc-Customer Service',
-        'Reservations':                    'sc-Customer Service',
-        'Membership Sales & Events':       'sc-Event Sales',
-        'Corporate Outreach & Sales':      'sc-Event Sales',
-        'Partnership Sales':            'sc-Event Sales',
-        'Event Management & Sales':        'sc-Event Sales',
-        'Live Programming':                'sc-Event Sales',
-    };
-
-    function handleDepartmentChange() {
-        const dept = document.getElementById('q1').value;
-        document.querySelectorAll('.scenario-q').forEach(el => el.style.display = 'none');
-        const target = SCENARIO_MAP[dept] || 'sc-default';
-        const el = document.getElementById(target);
-        if (el) el.style.display = 'block';
     }
 
     // ── Other field toggle ──────────────────────────────────────
@@ -972,27 +817,27 @@
         d.q1_department = document.getElementById('q1').value;
 
         // Single-select radios
-        ['q2','q3','q7','q8','q11','q13','q14','q15','q16','q17','q18',
+        ['q2','q7','q8','q11','q14','q15','q17','q18',
          'q21','q22','q23','q25','q27','q28','q29','q31','q34','q35',
-         'q36','q37','q40','q41','q42','q43'].forEach(q => {
+         'q40','q41','q42','q43'].forEach(q => {
             const el = document.querySelector(`input[name="${q}"]:checked`);
             d[q] = el ? el.value : '';
         });
 
         // Multi-select checkboxes
-        ['q4','q5','q6','q9','q_creative','q12','q20','q26','q33','q39'].forEach(q => {
+        ['q4','q9','q_creative','q12','q20','q26','q33','q39'].forEach(q => {
             d[q] = [...document.querySelectorAll(`input[name="${q}"]:checked`)]
                 .map(el => el.value).join(' | ');
         });
 
         // Other text fields
-        ['q4-other','q6-other','q9-other','q_creative-other','q33-other'].forEach(id => {
+        ['q4-other','q9-other','q_creative-other','q33-other'].forEach(id => {
             const el = document.getElementById(id);
             if (el && el.value) d[id] = el.value;
         });
 
         // Open text
-        ['q10','q19','q24','q30','q32','q38','q44','q45'].forEach(id => {
+        ['q6','q10','q19','q24','q32','q38','q38b','q38c'].forEach(id => {
             const el = document.getElementById(id);
             d[id] = el ? el.value.trim() : '';
         });
@@ -1008,20 +853,37 @@
 
         const data = collectData();
 
-        // ▶ Replace this with your Google Apps Script web app URL (see SETUP_GUIDE.md)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyW_h4u2i2ZQQoMr8jUUFdZYW9gPtfu8CuUNKI4a3duz4pPgWhc89ClFF4UfgSO5Tak/exec';
+        // Google Sheet backend (existing)
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyW_h4u2i2ZQQoMr8jUUFdZYW9gPtfu8CuUNKI4a3duz4pPgWhc89ClFF4UfgSO5Tak/exec';
 
-        try {
-            await fetch(SCRIPT_URL, {
+        // SharePoint via Power Automate — replace POWER_AUTOMATE_URL with the HTTP trigger URL
+        // from the Power Automate flow set up in the AI Steering Group site.
+        // Leave as empty string to disable until flow is configured.
+        const POWER_AUTOMATE_URL = '';
+
+        const submits = [];
+
+        submits.push(
+            fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            });
-        } catch(err) {
-            // no-cors prevents reading the response — if no network error, treat as success
+            }).catch(() => {})
+        );
+
+        if (POWER_AUTOMATE_URL) {
+            submits.push(
+                fetch(POWER_AUTOMATE_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                }).catch(() => {})
+            );
         }
 
+        await Promise.all(submits);
         showSuccess();
     }
 
@@ -1035,7 +897,6 @@
 
     // ── Init ────────────────────────────────────────────────────
     showSection(0);
-    document.querySelectorAll('.scenario-q').forEach(el => el.style.display = 'none');
 </script>
 </body>
 </html>
